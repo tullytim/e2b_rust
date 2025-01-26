@@ -37,14 +37,15 @@ struct ExecuteCodeRequest {
 pub enum ExecuteResponse {
     #[serde(rename = "stdout")]
     Stdout {
-        text: String
+        text: String,
+        timestamp: DateTime<Utc>,
     },
     #[serde(rename = "stderr")]
-    Stderr { content: String },
+    Stderr { name: String },
     #[serde(rename = "result")]
     Result { content: String },
     #[serde(rename = "error")]
-    Error { content: String },
+    Error { name: String, value: String },
 }
 
 impl E2BClient {
@@ -111,8 +112,7 @@ impl E2BClient {
                     let mut stream = stream.bytes_stream();
                     while let Some(chunk) = stream.next().await {
                         if let Ok(bytes) = chunk {
-                            println!("Received chunk: {:?}", String::from_utf8_lossy(&bytes));
-
+                            //println!("Received chunk: {:?}", String::from_utf8_lossy(&bytes));
                             if let Ok(response) = serde_json::from_slice::<ExecuteResponse>(&bytes) {
                                 println!("Sending response through channel");
                                 if let Err(e) = tx.send(response).await {
