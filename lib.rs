@@ -121,7 +121,14 @@ impl E2BClient {
                                 }
                             }
                             else {
-                                eprintln!("Failed to parse response");
+                                let response = String::from_utf8_lossy(&bytes);
+                                // check if response matched "end_of_execution", which is positive
+                                if response.contains("end_of_execution") {
+                                    break;
+                                }
+                                else{
+                                    eprintln!("Got error response {:?}", String::from_utf8_lossy(&bytes));
+                                }
                             }
                         }
                     }
