@@ -5,6 +5,7 @@ use std::time::Duration;
 use tokio::sync::mpsc;
 use futures_util::StreamExt;
 use chrono::{DateTime, Utc};
+use log::{info, debug, error};
 
 #[derive(Debug, Clone)]
 pub struct E2BClient {
@@ -98,10 +99,10 @@ impl E2BClient {
         let (tx, rx) = mpsc::channel(100);
         let client = self.client.clone();
         let api_key = self.api_key.clone();
-
+        let uri = format!("https://49999-{}.e2b.dev/execute", &sandbox_id);
         tokio::spawn(async move {
             let response = client
-                .post(format!("https://49999-{}.e2b.dev/execute", sandbox_id))
+                .post(&uri)
                 .header("Authorization", format!("Bearer {}", api_key))
                 .json(&request)
                 .send()
@@ -112,9 +113,8 @@ impl E2BClient {
                     let mut stream = stream.bytes_stream();
                     while let Some(chunk) = stream.next().await {
                         if let Ok(bytes) = chunk {
-                            //println!("Received chunk: {:?}", String::from_utf8_lossy(&bytes));
                             if let Ok(response) = serde_json::from_slice::<ExecuteResponse>(&bytes) {
-                                println!("Sending response through channel");
+                                log::debug!("Sending response through channel {:?}", &response);
                                 if let Err(e) = tx.send(response).await {
                                     eprintln!("Failed to send response through channel: {}", e);
                                     break;
@@ -152,5 +152,3 @@ impl E2BClient {
         Ok(())
     }
 }
-
-
