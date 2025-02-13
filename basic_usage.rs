@@ -4,19 +4,17 @@ use tokio::time::{Duration, timeout};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    env_logger::init();
+
     let api_key = std::env::var("E2B_API_KEY").expect("E2B_API_KEY must be set");
     let client = E2BClient::new(api_key);
 
     let sandbox_id = client.create_sandbox().await?;
-    println!("Have sandbox id: {}", sandbox_id);
     let code = r#"
-    import time
-
     print("Starting...")
     for i in range(5):
-        print(f"Sleeping for {i} seconds...")
-        time.sleep(1)
-    time.sleep(1)
+        print(f"Running for {i} ...")
+
     print("Finished!")
         "#;    
     let mut rx = client.execute_code(sandbox_id.clone(), code).await?;
