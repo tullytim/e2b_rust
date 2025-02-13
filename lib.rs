@@ -5,7 +5,6 @@ use std::time::Duration;
 use tokio::sync::mpsc;
 use futures_util::StreamExt;
 use chrono::{DateTime, Utc};
-use log::{info, debug, error};
 
 #[derive(Debug, Clone)]
 pub struct E2BClient {
@@ -73,15 +72,15 @@ impl E2BClient {
             .await?;
 
            // Print the status code and headers
-           println!("Status: {}", response.status());
-           println!("Headers: {:#?}", response.headers());
+           log::debug!("Status: {}", response.status());
+           log::debug!("Headers: {:#?}", response.headers());
 
         if !response.status().is_success() {
             let error_text = response.text().await?;
             return Err(format!("API error: {}", error_text).into());
         }
         let body = response.text().await?;
-        println!("Response body: {}", body);
+        log::debug!("Response body: {}", body);
         let parsed: CreateSandboxResponse = serde_json::from_str(&body)?;
         
         Ok(format!("{}-{}", parsed.sandbox_id, parsed.client_id))
