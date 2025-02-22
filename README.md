@@ -34,14 +34,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let mut rx = client.execute_code(sandbox_id.clone(), code).await?;
     let timeout_duration = Duration::from_secs(10);
 
-                    while let Ok(Some(response)) = timeout(timeout_duration, rx.recv()).await {
-                        match response {
-                            ExecuteResponse::Stdout { text, timestamp} => println!("stdout: {} {}", text, timestamp),
-                            ExecuteResponse::Stderr { name } => eprintln!("stderr: {}", name),
-                            ExecuteResponse::Result { content } => println!("result: {}", content),
-                            ExecuteResponse::Error { name, value } => eprintln!("error: {} : {}", name, value),
-                        }
-                    }
+    while let Ok(Some(response)) = timeout(timeout_duration, rx.recv()).await {
+         match response {
+               ExecuteResponse::Stdout { text, timestamp} => println!("stdout: {} {}", text, timestamp),
+               ExecuteResponse::Stderr { name } => eprintln!("stderr: {}", name),
+               ExecuteResponse::Result { content } => println!("result: {}", content),
+               ExecuteResponse::Error { name, value } => eprintln!("error: {} : {}", name, value),
+        }
+    }
    
     println!("Killing sandbox...");
     client.kill_sandbox(&sandbox_id).await?;
