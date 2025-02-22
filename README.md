@@ -11,6 +11,11 @@ Add this to your `Cargo.toml`:
 e2b_sdk = "0.1.0"
 ```
 
+## Debugging
+```sh
+$ RUST_LOG=debug
+```
+
 ## Usage
 
 ```rust
