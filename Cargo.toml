@@ -1,14 +1,14 @@
 [package]
 name = "e2b-sdk"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Tim Tully <tim@menlovc.com>"]
 description = "A Rust SDK for interacting with the E2B API"
 license = "MIT"
-repository = "https://github.com/tullytim/e2b_sdk"
+repository = "https://github.com/tullytim/e2b_rust"
 documentation = "https://docs.rs/e2b_sdk"
 readme = "README.md"
-keywords = ["e2b", "sdk", "api"]car
+keywords = ["e2b", "sdk", "api"]
 categories = ["api-bindings"]
 
 [dependencies]
@@ -31,3 +31,5 @@ pretty_assertions = "1.0"
 [[example]]
 name = "basic_usage"
 path = "examples/basic_usage.rs"
+~
+~
